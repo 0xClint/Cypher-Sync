@@ -11,8 +11,10 @@ import {
 } from "@dataverse/runtime-connector";
 
 // did:pkh:eip155:1:0xbce910FAF9Ba3a0795d4D9E414dc52c2fCD5a587
+
 const Page = () => {
   const [base64Data, setBase64Data] = useState("");
+  const [data, setData] = useState("");
   const [runtimeConnector, setRuntimeConnector] = useState(null);
   const isBrowser = typeof window !== "undefined";
 
@@ -26,7 +28,7 @@ const Page = () => {
   }, [isBrowser]);
 
   const connectWallet = async () => {
-    const res = await runtimeConnector.connectWallet(WALLET.METAMASK);
+    const res = await runtimeConnector.connectWallet(WALLET.PARTICLE);
     console.log(res);
   };
 
@@ -103,8 +105,9 @@ const Page = () => {
     console.log(res);
   };
   const fetchFolder = async () => {
-    const res = await runtimeConnector.readFolders();
-    console.log(res);
+    // const res = await runtimeConnector.readFolders();
+    const res1 = await runtimeConnector.readFolder();
+    // console.log(res);
   };
   // "kjzl6kcym7w8y6uj28bchczq0cdf1u1z9lnt4u30gzd5mtoi3ok8f5jctnbda7k";
   const uplaodFile = async () => {
@@ -133,9 +136,21 @@ const Page = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  const base64File = async () => {
+    base64ToImage(data, "ss");
+    function base64ToImage(base64String, altText) {
+      const img = document.createElement("img");
+      img.src = `data:image/png;base64,${base64String}`;
+      img.alt = altText;
+
+      // Append the image element to the document body or any other container element
+      document.body.appendChild(img);
+    }
+  };
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col gap-3">
-      <button onClick={() => connectWallet()} className="border py-1 px-2">
+      <button onClick={() => connectWallet()} className="btn btn-neutral">
         Connect Wallet
       </button>
       <button onClick={() => createcapabilities()} className="border py-1 px-2">
@@ -175,6 +190,15 @@ const Page = () => {
             Base64 Data: {base64Data}
           </p>
         </div>
+      </div>
+      <div>
+        <textarea
+          value={data}
+          onChange={(e) => setData(e.target.value)}
+        ></textarea>
+        <button onClick={() => base64File()} className="border py-1 px-2">
+          Upload File
+        </button>
       </div>
     </div>
   );

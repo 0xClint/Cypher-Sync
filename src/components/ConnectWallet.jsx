@@ -62,19 +62,26 @@ const ConnectWallet = () => {
   };
   return (
     <div>
-      <button
-        className="button is-white connect-wallet"
-        onClick={connectWallet}
-      >
-        <span className="is-link has-text-weight-bold">
-          {walletAddress && walletAddress.length > 0
-            ? `Connected: ${walletAddress.substring(
-                0,
-                6
-              )}...${walletAddress.substring(38)}`
-            : "Connect Wallet"}
-        </span>
-      </button>
+      {walletAddress && walletAddress.length > 0 ? (
+        <div className="flex items-center gap-2 cursor-pointer">
+          <div className="avatar">
+            <div className="w-12 rounded-full">
+              <img src="https://e7.pngegg.com/pngimages/348/800/png-clipart-man-wearing-blue-shirt-illustration-computer-icons-avatar-user-login-avatar-blue-child.png" />
+            </div>
+          </div>
+          <div className="text-primary">
+            <h3 className="font-semibold m-0">Guest</h3>
+            <p className="text-[0.8rem]">
+              {`${walletAddress.substring(0, 6)}...
+          ${walletAddress.substring(38)}`}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <button className="btn btn-active btn-neutral" onClick={connectWallet}>
+          Connect Wallet
+        </button>
+      )}
     </div>
   );
 };
