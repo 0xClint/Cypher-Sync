@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   RuntimeConnector,
   Extension,
@@ -11,9 +11,19 @@ import {
 } from "@dataverse/runtime-connector";
 
 // did:pkh:eip155:1:0xbce910FAF9Ba3a0795d4D9E414dc52c2fCD5a587
-const page = () => {
+const Page = () => {
   const [base64Data, setBase64Data] = useState("");
-  const runtimeConnector = new RuntimeConnector(Extension);
+  const [runtimeConnector, setRuntimeConnector] = useState(null);
+  const isBrowser = typeof window !== "undefined";
+
+  useEffect(() => {
+    if (isBrowser) {
+      import("@dataverse/runtime-connector").then((module) => {
+        const RuntimeConnector = module.RuntimeConnector;
+        setRuntimeConnector(new RuntimeConnector(Extension));
+      });
+    }
+  }, [isBrowser]);
 
   const createcapabilities = async () => {
     const pkh = await runtimeConnector.createCapability({
@@ -162,4 +172,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

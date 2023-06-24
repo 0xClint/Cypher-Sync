@@ -2,7 +2,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 
-const page = () => {
+const Page = () => {
   const [data, setData] = useState("aaf");
   console.log(data);
   return (
@@ -19,4 +19,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
