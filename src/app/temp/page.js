@@ -25,6 +25,11 @@ const Page = () => {
     }
   }, [isBrowser]);
 
+  const connectWallet = async () => {
+    const res = await runtimeConnector.connectWallet(WALLET.METAMASK);
+    console.log(res);
+  };
+
   const createcapabilities = async () => {
     const pkh = await runtimeConnector.createCapability({
       app: "tempApp",
@@ -130,6 +135,9 @@ const Page = () => {
   };
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col gap-3">
+      <button onClick={() => connectWallet()} className="border py-1 px-2">
+        Connect Wallet
+      </button>
       <button onClick={() => createcapabilities()} className="border py-1 px-2">
         create capability
       </button>
