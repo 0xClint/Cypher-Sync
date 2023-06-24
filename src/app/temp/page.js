@@ -33,7 +33,7 @@ const Page = () => {
   const createcapabilities = async () => {
     const pkh = await runtimeConnector.createCapability({
       app: "tempApp",
-      resource: RESOURCE.CERAMIC,
+      // resource: RESOURCE.CERAMIC,
       wallet: WALLET.METAMASK,
     });
     console.log(pkh);
