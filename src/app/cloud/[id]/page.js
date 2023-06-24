@@ -9,7 +9,7 @@ import { FileCard, FolderCard, Header } from "@/components";
 import CancelIcon from "@/assets/cancel.png";
 import Image from "next/image";
 
-const page = ({ params }) => {
+const Page = ({ params }) => {
   const [runtimeConnector, setRuntimeConnector] = useState(null);
   const isBrowser = typeof window !== "undefined";
   const [fileData, setFileData] = useState("");
@@ -214,8 +214,8 @@ const page = ({ params }) => {
                 const { mirrorId, mirrorFile } = fileData[id];
                 //   console.log(mirrorFile, mirrorId);
                 return (
-                  <div onClick={() => fetchIPFS()}>
-                    <FileCard key={mirrorId} data={mirrorFile} />
+                  <div onClick={() => fetchIPFS()} key={mirrorId}>
+                    <FileCard data={mirrorFile} />
                   </div>
                 );
               })
@@ -253,4 +253,4 @@ const page = ({ params }) => {
   );
 };
 
-export default page;
+export default Page;

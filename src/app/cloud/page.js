@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Extension, FolderType, WALLET } from "@dataverse/runtime-connector";
 import { FolderCard, Header } from "@/components";
 
-const page = () => {
+const Page = () => {
   const [runtimeConnector, setRuntimeConnector] = useState(null);
   const isBrowser = typeof window !== "undefined";
   const [folderData, setFolderData] = useState("");
@@ -171,4 +171,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
