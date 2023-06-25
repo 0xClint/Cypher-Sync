@@ -9,6 +9,7 @@ const Page = () => {
   const [folderData, setFolderData] = useState("");
   const [loader, setLoader] = useState(false);
   const [folderName, setfolderName] = useState("");
+  const [isAuth, setisAuth] = useState(true);
 
   useEffect(() => {
     if (isBrowser) {
@@ -20,15 +21,44 @@ const Page = () => {
   }, [isBrowser]);
 
   useEffect(() => {
+    const checkcapabilities = async () => {
+      const pkh = await runtimeConnector?.checkCapability(
+        process.env.NEXT_PUBLIC_APP_NAME
+      );
+      console.log(pkh);
+      if (!pkh) {
+        setisAuth(false);
+        return;
+      }
+      setisAuth(true);
+    };
+    checkcapabilities();
+  }, [runtimeConnector]);
+
+  const createcapability = async () => {
+    setLoader(true);
+    const pkh = await runtimeConnector.createCapability({
+      app: process.env.NEXT_PUBLIC_APP_NAME,
+      // resource: RESOURCE.CERAMIC,
+      wallet: WALLET.METAMASK,
+    });
+    console.log(pkh);
+    setLoader(false);
+    location.reload();
+  };
+
+  useEffect(() => {
     const fetchFolder = async () => {
-      setLoader(true);
-      const res = await runtimeConnector?.readFolders();
-      setFolderData(res);
-      console.log(res);
-      setLoader(false);
+      if (isAuth) {
+        setLoader(true);
+        const res = await runtimeConnector?.readFolders();
+        setFolderData(res ? res : "");
+        console.log(res);
+        setLoader(false);
+      }
     };
     fetchFolder();
-  }, [runtimeConnector]);
+  }, [runtimeConnector, isAuth]);
 
   const connectWallet = async () => {
     const res = await runtimeConnector?.connectWallet();
@@ -72,6 +102,45 @@ const Page = () => {
       </dialog>
 
       <Header />
+      {/* {isAuth && (
+        <dialog id="my_modal_1" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Create Capabilities</h3>
+            <p className="py-4">
+              Please create capabilities before using the drive
+            </p>
+            <div
+            className="modal-action"
+            >
+              if there is a button in form, it will close the modal
+              <button
+                className="btn"
+                onClick={() => createcapability()}
+              >
+                Create capability
+              </button>
+            </div>
+          </div>
+        </dialog>
+      )} */}
+      {!isAuth && (
+        <div
+          className="fixed top-0 w-screen h-screen flex justify-center items-center"
+          style={{ background: "rgba(223, 223, 223, 0.22)" }}
+        >
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Create Capabilities</h3>
+            <p className="py-4">
+              Please create capabilities before using the drive
+            </p>
+            <div className="modal-action">
+              <button className="btn" onClick={() => createcapability()}>
+                Create capability
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {loader && (
         <div
           className="fixed top-0 w-screen h-screen flex justify-center items-center"

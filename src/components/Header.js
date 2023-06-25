@@ -5,12 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/logo.png";
 import { Extension, WALLET } from "@dataverse/runtime-connector";
+import "@particle-network/connect-react-ui/dist/index.css";
+import { ConnectButton } from "@particle-network/connect-react-ui";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [runtimeConnector, setRuntimeConnector] = useState(null);
   const [balance, setBalance] = useState("");
-  const [isbalance, setIsBalance] = useState(false);
+  const [address, setAddress] = useState("");
   const isBrowser = typeof window !== "undefined";
+  const router = useRouter();
 
   useEffect(() => {
     if (isBrowser) {
@@ -54,6 +58,21 @@ const Header = () => {
       });
   };
   console.log(balance);
+
+  const visitRamp = async () => {
+    const pkh = await runtimeConnector.createCapability({
+      app: process.env.NEXT_PUBLIC_APP_NAME,
+      // resource: RESOURCE.CERAMIC,
+      wallet: WALLET.METAMASK,
+    });
+    window.open(
+      `https://ramp.particle.network/?walletAddress=${pkh.replace(
+        "did:pkh:eip155:1:",
+        ""
+      )}`,
+      "_blank"
+    );
+  };
   return (
     <div className="flex w-full justify-between px-7 py-3 bg-base-200 border-b border-[#d0d0d0]">
       <Link href="/">
@@ -76,6 +95,10 @@ const Header = () => {
           </button>
         )}
 
+        <button className="btn btn-ghost" onClick={() => visitRamp()}>
+          Buy Crypto
+        </button>
+        <ConnectButton />
         <ConnectWallet />
       </div>
     </div>
