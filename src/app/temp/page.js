@@ -97,7 +97,9 @@ const Page = () => {
   };
 
   const getTableInfo = async () => {
-    const pkh = await runtimeConnector.getDAppInfo("tempApp");
+    const pkh = await runtimeConnector.getDAppInfo(
+      process.env.NEXT_PUBLIC_APP_NAME
+    );
     console.log(pkh);
   };
 
