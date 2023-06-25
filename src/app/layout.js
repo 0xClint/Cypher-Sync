@@ -8,10 +8,10 @@ import { evmWallets } from "@particle-network/connect";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "Cypher Sync",
-  description: "",
-};
+// export const metadata = {
+//   title: "Cypher Sync",
+//   description: "",
+// };
 
 export default function RootLayout({ children }) {
   return (
