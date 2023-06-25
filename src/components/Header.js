@@ -23,7 +23,7 @@ const Header = () => {
 
   const createcapabilities = async () => {
     const pkh = await runtimeConnector.createCapability({
-      app: "tempApp",
+      app: process.env.NEXT_PUBLIC_APP_NAME,
       // resource: RESOURCE.CERAMIC,
       wallet: WALLET.METAMASK,
     });
