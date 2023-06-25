@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getBalance } from "@/utils/BlockPi";
 import { ConnectWallet } from ".";
+import Link from "next/link";
+import Image from "next/image";
+import logo from "@/assets/logo.png";
 import { Extension, WALLET } from "@dataverse/runtime-connector";
 
 const Header = () => {
@@ -54,7 +56,11 @@ const Header = () => {
   console.log(balance);
   return (
     <div className="flex w-full justify-between px-7 py-3 bg-base-200 border-b border-[#d0d0d0]">
-      <div className="font-bold text-[1.5rem]">Logo</div>
+      <Link href="/">
+        <div className="font-bold text-[1.5rem] flex justify-center items-center">
+          <Image src={logo} width={45}></Image>
+        </div>
+      </Link>
       <div className="flex gap-2">
         {balance ? (
           <div className=" flex items-center font-semibold w-28">

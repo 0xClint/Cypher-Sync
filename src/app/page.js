@@ -32,8 +32,9 @@ export default function Home() {
               </div>
             </Link>
             <div className=" flex flex-col gap-2 text-[1.2rem] font-semibold drop-shadow-sm  cursor-pointer">
-              <div className="w-72 h-72 rounded-[40px] bg-base-100 flex justify-center items-center">
+              <div className="w-72 h-72 rounded-[40px] bg-base-100 flex  flex-col justify-center items-center">
                 <Image src={mail} width={180}></Image>
+                coming soon...
               </div>
               <p>Mail</p>
             </div>
