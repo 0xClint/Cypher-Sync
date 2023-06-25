@@ -8,14 +8,19 @@ import {
 import { FileCard, FolderCard, Header } from "@/components";
 import CancelIcon from "@/assets/cancel.png";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { LIT_ACTION_SIGN_CODE } from "@/utils/litAction";
 
 const Page = ({ params }) => {
   const [runtimeConnector, setRuntimeConnector] = useState(null);
+  const router = useRouter();
   const isBrowser = typeof window !== "undefined";
   const [fileData, setFileData] = useState("");
   const [file, setFile] = useState("");
+  const [fileSize, setFileSize] = useState("");
   const [base64Data, setBase64Data] = useState("");
   const [fileName, setFileName] = useState("");
+  const [selectFileDelete, setSelectFileDelete] = useState("");
   const [loader, setLoader] = useState(false);
   const [modal, setModal] = useState(false);
 
@@ -45,18 +50,19 @@ const Page = ({ params }) => {
     fetchFolder();
   }, [runtimeConnector]);
 
-  const fetchIPFS = async () => {
+  const fetchIPFS = async (id, indexFileId) => {
+    setSelectFileDelete(indexFileId);
     try {
-      await fetch(
-        "https://ipfs.io/ipfs/bafkreidee34nltkk32ijcgizwfp3brfypy3xantabcrxwmpuvm5mhghlum"
-      )
+      setLoader(true);
+      await fetch(`https://ipfs.io/ipfs/${id}`)
         .then((response) => response.text())
         .then(async (data) => {
-          console.log(data);
+          //   console.log(data);
           let file = await data;
           setFile(await `data:image/png;base64,${file}`);
           setModal(true);
         });
+      setLoader(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -64,12 +70,13 @@ const Page = ({ params }) => {
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
+    setFileSize(file.size);
 
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result.split(",")[1];
-        console.log(base64String);
+        // console.log(base64String);
         setBase64Data(base64String);
       };
       reader.readAsDataURL(file);
@@ -77,10 +84,9 @@ const Page = ({ params }) => {
   };
 
   const uploadFile = async () => {
-    console.log(base64Data, fileName);
+    // console.log(base64Data, fileName);
     if (base64Data && fileName) {
-      setLoader(true);
-      const pkh = await runtimeConnector.uploadFile({
+      const pkh = await runtimeConnector?.uploadFile({
         folderId: params.id,
         fileBase64: base64Data,
         fileName: fileName,
@@ -92,14 +98,59 @@ const Page = ({ params }) => {
       });
       console.log(pkh);
       setLoader(false);
+      location.reload();
     }
   };
 
-  console.log(fileData);
+  const deleteFolder = async () => {
+    setLoader(true);
+    const res = await runtimeConnector.deleteFolder({ folderId: params.id });
+    await router.push("/cloud");
+    setLoader(false);
+  };
+
+  const deleteFile = async () => {
+    setLoader(true);
+    const res = await runtimeConnector?.removeFiles({
+      indexFileIds: [selectFileDelete],
+    });
+    console.log(res);
+    location.reload();
+    setLoader(false);
+  };
+
+  const listAction = async () => {
+    console.log("fileSize : " + fileSize);
+    const res = await runtimeConnector.executeLitAction({
+      code: LIT_ACTION_SIGN_CODE(fileSize),
+      jsParams: {
+        toSign: [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100],
+        publicKey: process.env.NEXT_PUBLIC_LIT_PUBLIC_PKP,
+        sigName: "sig1",
+      },
+    });
+    await console.log(res.response);
+    if (res.response) {
+      setLoader(true);
+      uploadFile();
+    } else {
+      window.my_modal_1.showModal();
+    }
+  };
 
   return (
     <div className="bg-base-200">
       <Header />
+      <dialog id="my_modal_1" className="modal">
+        <form method="dialog" className="modal-box">
+          <h3 className="font-bold text-lg">File Size error!</h3>
+          <p className="py-4">Only ulpload file having size below 20MB.</p>
+          <div className="modal-action">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn">Close</button>
+          </div>
+        </form>
+      </dialog>
       <dialog id="my_modal_3" className="modal">
         <form method="dialog" className="modal-box flex flex-col gap-5">
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -121,7 +172,7 @@ const Page = ({ params }) => {
             onChange={handleFileInputChange}
           />
           <div className="modal-action flex justify-center">
-            <button className="btn" onClick={() => uploadFile()}>
+            <button className="btn" onClick={() => listAction()}>
               Create
             </button>
           </div>
@@ -201,20 +252,32 @@ const Page = ({ params }) => {
         <div className="w-full p-4">
           <div className=" mr-10 flex justify-between">
             <h2 className="font-semibold text-[1.2rem]">Files</h2>
-            <button
-              className="btn btn-outline"
-              onClick={() => window.my_modal_3.showModal()}
-            >
-              Upload file +
-            </button>
+            <div>
+              <button
+                className="btn btn-outline btn-error"
+                onClick={() => deleteFolder()}
+              >
+                Delete Folder
+              </button>
+              <button
+                className="btn btn-outline ml-2"
+                onClick={() => window.my_modal_3.showModal()}
+              >
+                Upload file +
+              </button>
+            </div>
           </div>
           <div className="my-5 px-3 flex flex-wrap gap-10">
             {fileData ? (
               Object.keys(fileData).map((id) => {
                 const { mirrorId, mirrorFile } = fileData[id];
-                //   console.log(mirrorFile, mirrorId);
                 return (
-                  <div onClick={() => fetchIPFS()} key={mirrorId}>
+                  <div
+                    onClick={() =>
+                      fetchIPFS(mirrorFile.contentId, mirrorFile.indexFileId)
+                    }
+                    key={mirrorId}
+                  >
                     <FileCard data={mirrorFile} />
                   </div>
                 );
@@ -232,13 +295,21 @@ const Page = ({ params }) => {
           className="fixed top-0 w-screen h-screen flex justify-center items-center bg-[#]"
           style={{ background: "rgba(53, 53, 53, 0.70)" }}
         >
-          <Image
-            src={CancelIcon}
-            alt="cancel"
-            width={25}
-            className="absolute top-6 right-5 cursor-pointer"
-            onClick={() => setModal(false)}
-          ></Image>
+          <div className="absolute top-6 right-5 cursor-pointer flex  justify-center items-center gap-7">
+            <button className="btn btn-sm" onClick={() => deleteFile()}>
+              Delete
+            </button>
+            <Image
+              src={CancelIcon}
+              alt="cancel"
+              width={25}
+              //   className="absolute top-6 right-5 cursor-pointer"
+              onClick={() => {
+                setModal(false);
+                setSelectFileDelete("");
+              }}
+            ></Image>
+          </div>
           <img
             src={
               file

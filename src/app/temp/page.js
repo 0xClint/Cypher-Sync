@@ -9,6 +9,10 @@ import {
   StorageProviderName,
   FolderType,
 } from "@dataverse/runtime-connector";
+// *************************************************************
+import "@particle-network/connect-react-ui/dist/index.css";
+import { ConnectButton } from "@particle-network/connect-react-ui";
+import { LIT_ACTION_SIGN_CODE } from "@/utils/litAction";
 
 // did:pkh:eip155:1:0xbce910FAF9Ba3a0795d4D9E414dc52c2fCD5a587
 
@@ -148,9 +152,37 @@ const Page = () => {
       document.body.appendChild(img);
     }
   };
+
+  //   const LIT_ACTION_SIGN_CODE = `
+  // const go = async () => {
+  //   const url = "https://api.weather.gov/gridpoints/TOP/31,80/forecast";
+  //   const resp = await fetch(url).then((response) => response.json());
+  //   const temp = await resp.properties.periods[0].temperature;
+
+  //   Lit.Actions.setResponse({response: JSON.stringify({temp})});
+  // };
+
+  // go();
+  // `;
+  const executeJsArgs = {
+    code: LIT_ACTION_SIGN_CODE(2000000),
+    jsParams: {
+      toSign: [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100],
+      publicKey:
+        "0x04427015386583bd3bc91cf7b2e89b4b80dafce8f7c622d947fa4db0ead1d069b65469beb164da8ca910317211f6513bb0f11a07c93c293d23764aaca06fa7b872",
+      sigName: "sig1",
+    },
+  };
+
+  const listAction = async () => {
+    const res = await runtimeConnector.executeLitAction(executeJsArgs);
+    console.log(res);
+  };
+
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col gap-3">
-      <button onClick={() => connectWallet()} className="btn btn-neutral">
+      <ConnectButton />
+      <button onClick={() => listAction()} className="btn btn-neutral">
         Connect Wallet
       </button>
       <button onClick={() => createcapabilities()} className="border py-1 px-2">

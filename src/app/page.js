@@ -1,5 +1,9 @@
 import { ConnectWallet, Header } from "@/components";
 import Image from "next/image";
+import Link from "next/link";
+import markdown from "@/assets/markdown.png";
+import Cloud from "@/assets/cloud.png";
+import mail from "@/assets/mail.png";
 
 export default function Home() {
   return (
@@ -11,16 +15,26 @@ export default function Home() {
           <h1 className="text-5xl font-bold mb-3">Explore Apps</h1>
 
           <div className="flex gap-14">
-            <div className=" flex flex-col gap-2 text-[1.2rem] font-semibold drop-shadow-sm cursor-pointer">
-              <div className="w-72 h-72 rounded-[40px] bg-base-100"></div>
-              <p>Cypher Cloud</p>
-            </div>
+            <Link href="/cloud">
+              <div className=" flex flex-col gap-2 text-[1.2rem] font-semibold drop-shadow-sm cursor-pointer">
+                <div className="w-72 h-72 rounded-[40px] bg-base-100 flex justify-center items-center">
+                  <Image src={Cloud} width={180}></Image>
+                </div>
+                <p>Cypher Cloud</p>
+              </div>
+            </Link>
+            <Link href="/markdown">
+              <div className=" flex flex-col gap-2 text-[1.2rem] font-semibold drop-shadow-sm  cursor-pointer">
+                <div className="w-72 h-72 rounded-[40px] bg-base-100 flex justify-center items-center">
+                  <Image src={markdown} width={180}></Image>
+                </div>
+                <p>Mardown Editor</p>
+              </div>
+            </Link>
             <div className=" flex flex-col gap-2 text-[1.2rem] font-semibold drop-shadow-sm  cursor-pointer">
-              <div className="w-72 h-72 rounded-[40px] bg-base-100"></div>
-              <p>Mardown Editor</p>
-            </div>
-            <div className=" flex flex-col gap-2 text-[1.2rem] font-semibold drop-shadow-sm  cursor-pointer">
-              <div className="w-72 h-72 rounded-[40px] bg-base-100"></div>
+              <div className="w-72 h-72 rounded-[40px] bg-base-100 flex justify-center items-center">
+                <Image src={mail} width={180}></Image>
+              </div>
               <p>Mail</p>
             </div>
           </div>

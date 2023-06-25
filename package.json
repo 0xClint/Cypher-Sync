@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@dataverse/runtime-connector": "^1.0.59",
+    "@particle-network/auth": "^0.14.1",
+    "@particle-network/connect": "^0.14.1",
+    "@particle-network/connect-react-ui": "^0.14.1",
+    "@particle-network/provider": "^0.14.1",
     "autoprefixer": "10.4.14",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
