@@ -32,7 +32,7 @@ const Page = () => {
   }, [isBrowser]);
 
   const connectWallet = async () => {
-    const res = await runtimeConnector.connectWallet(WALLET.PARTICLE);
+    const res = await runtimeConnector.connectWallet(WALLET.METAMASK);
     console.log(res);
   };
 
@@ -184,7 +184,7 @@ const Page = () => {
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col gap-3">
       <ConnectButton />
-      <button onClick={() => listAction()} className="btn btn-neutral">
+      <button onClick={() => connectWallet()} className="btn btn-neutral">
         Connect Wallet
       </button>
       <button onClick={() => createcapabilities()} className="border py-1 px-2">

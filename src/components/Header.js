@@ -75,11 +75,16 @@ const Header = () => {
   };
   return (
     <div className="flex w-full justify-between px-7 py-3 bg-base-200 border-b border-[#d0d0d0]">
-      <Link href="/">
-        <div className="font-bold text-[1.5rem] flex justify-center items-center">
-          <Image src={logo} width={45}></Image>
-        </div>
-      </Link>
+      <div className="flex gap-10">
+        <Link href="/">
+          <div className="font-bold text-[1.5rem] flex justify-center items-center">
+            <Image src={logo} width={45}></Image>
+          </div>
+        </Link>{" "}
+        <button className="btn btn-ghost" onClick={() => visitRamp()}>
+          Buy Crypto
+        </button>
+      </div>
       <div className="flex gap-2">
         {balance ? (
           <div className=" flex items-center font-semibold w-28">
@@ -95,9 +100,6 @@ const Header = () => {
           </button>
         )}
 
-        <button className="btn btn-ghost" onClick={() => visitRamp()}>
-          Buy Crypto
-        </button>
         <ConnectButton />
         <ConnectWallet />
       </div>

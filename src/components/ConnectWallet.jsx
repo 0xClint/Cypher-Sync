@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import metamask from "@/assets/metamask.png";
 
 const ConnectWallet = () => {
   const [walletAddress, setWalletAddress] = useState("");
@@ -79,7 +81,7 @@ const ConnectWallet = () => {
         </div>
       ) : (
         <button className="btn btn-active btn-neutral" onClick={connectWallet}>
-          Connect Wallet
+          Connect <Image src={metamask} width={30}></Image>
         </button>
       )}
     </div>
