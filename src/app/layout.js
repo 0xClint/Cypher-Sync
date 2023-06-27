@@ -5,6 +5,7 @@ import { ModalProvider } from "@particle-network/connect-react-ui";
 import { WalletEntryPosition } from "@particle-network/auth";
 import { Ethereum, EthereumGoerli } from "@particle-network/common";
 import { evmWallets } from "@particle-network/connect";
+import { Header } from "@/components";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,7 +51,10 @@ export default function RootLayout({ children }) {
           "facebook",
         ]}
       >
-        <body className={inter.className}>{children}</body>{" "}
+        <body className={inter.className}>
+          <Header />
+          {children}
+        </body>
       </ModalProvider>
     </html>
   );

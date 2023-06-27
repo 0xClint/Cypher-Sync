@@ -8,6 +8,7 @@ import {
   StorageProvider,
   StorageProviderName,
   FolderType,
+  Currency,
 } from "@dataverse/runtime-connector";
 // *************************************************************
 import "@particle-network/connect-react-ui/dist/index.css";
@@ -32,7 +33,7 @@ const Page = () => {
   }, [isBrowser]);
 
   const connectWallet = async () => {
-    const res = await runtimeConnector.connectWallet(WALLET.METAMASK);
+    const res = await runtimeConnector.connectWallet();
     console.log(res);
   };
 
@@ -61,7 +62,7 @@ const Page = () => {
   const loadStreamsBy = async () => {
     const pkh = await runtimeConnector.loadStreamsBy({
       modelId:
-        "kjzl6hvfrbw6cbb20v8tt0yv9qslm1yq08cccqj9p580k8kqe20ufs28ashh0pj",
+        "kjzl6hvfrbw6c83pw6fv43od18xwnqa9sp0245dfn33il8bp3eket0m1lx2i7rk",
     });
     console.log(pkh);
   };
@@ -69,14 +70,12 @@ const Page = () => {
   const createStream = async () => {
     const pkh = await runtimeConnector.createStream({
       modelId:
-        "kjzl6hvfrbw6cbb20v8tt0yv9qslm1yq08cccqj9p580k8kqe20ufs28ashh0pj",
+        "kjzl6hvfrbw6c83pw6fv43od18xwnqa9sp0245dfn33il8bp3eket0m1lx2i7rk",
       streamContent: {
         appVersion: "1",
-        text: "cane Photography",
+        text: "Photography",
         images: [
           "https://johnstillk8.scusd.edu/sites/main/files/main-images/camera_lense_0.jpeg",
-          "./photo.jpg",
-          "https://img-19.commentcamarche.net/cI8qqj-finfDcmx6jMK6Vr-krEw=/1500x/smart/b829396acc244fd484c5ddcdcb2b08f3/ccmcms-commentcamarche/20494859.jpg",
         ],
         videos: ["./video.mp4"],
         createdAt: new Date().toISOString(),
@@ -110,10 +109,27 @@ const Page = () => {
     });
     console.log(res);
   };
+
+  const getProfile = async () => {
+    const res = await runtimeConnector.getProfiles(
+      "0xbce910FAF9Ba3a0795d4D9E414dc52c2fCD5a587"
+    );
+    return res;
+  };
+
+  const monetizeFolder = async () => {
+    const res = await runtimeConnector.monetizeFolder({
+      folderId:
+        "kjzl6kcym7w8y5dd6uqemu1b7xmiu8ym71s36ivgqrlawb4kfa3isq8rw79wsn1",
+      folderDescription: "monetize this folder",
+      datatokenVars:
+        "k2t6wzhkhabz2qyc4qqv5y1izo1gas0binpzeeud965qqiigx7pny9vzzqxqfe",
+    });
+    console.log(res);
+  };
   const fetchFolder = async () => {
-    // const res = await runtimeConnector.readFolders();
-    const res1 = await runtimeConnector.readFolder();
-    // console.log(res);
+    const res = await runtimeConnector.readFolders();
+    console.log(res);
   };
   // "kjzl6kcym7w8y6uj28bchczq0cdf1u1z9lnt4u30gzd5mtoi3ok8f5jctnbda7k";
   const uplaodFile = async () => {
@@ -155,17 +171,6 @@ const Page = () => {
     }
   };
 
-  //   const LIT_ACTION_SIGN_CODE = `
-  // const go = async () => {
-  //   const url = "https://api.weather.gov/gridpoints/TOP/31,80/forecast";
-  //   const resp = await fetch(url).then((response) => response.json());
-  //   const temp = await resp.properties.periods[0].temperature;
-
-  //   Lit.Actions.setResponse({response: JSON.stringify({temp})});
-  // };
-
-  // go();
-  // `;
   const executeJsArgs = {
     code: LIT_ACTION_SIGN_CODE(2000000),
     jsParams: {
@@ -213,6 +218,12 @@ const Page = () => {
       </button>
       <button onClick={() => fetchFolder()} className="border py-1 px-2">
         fetch Folder
+      </button>
+      <button onClick={() => monetizeFolder()} className="border py-1 px-2">
+        Monetize Folder
+      </button>
+      <button onClick={() => getProfile()} className="border py-1 px-2">
+        Get Profile
       </button>
       <div>
         <input type="file" onChange={handleFileInputChange} />

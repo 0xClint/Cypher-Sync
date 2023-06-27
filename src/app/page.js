@@ -8,8 +8,6 @@ import mail from "@/assets/mail.png";
 export default function Home() {
   return (
     <div>
-      <Header />
-
       <div className="hero h-[89.5vh] bg-base-200">
         <div className="hero-content text-center flex-col flex">
           <h1 className="text-5xl font-bold mb-3">Explore Apps</h1>

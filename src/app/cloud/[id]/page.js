@@ -7,6 +7,7 @@ import {
 } from "@dataverse/runtime-connector";
 import { FileCard, FolderCard, Header } from "@/components";
 import CancelIcon from "@/assets/cancel.png";
+import litLogo from "@/assets/litLogo.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { LIT_ACTION_SIGN_CODE } from "@/utils/litAction";
@@ -140,7 +141,6 @@ const Page = ({ params }) => {
 
   return (
     <div className="bg-base-200">
-      <Header />
       <dialog id="my_modal_1" className="modal">
         <form method="dialog" className="modal-box">
           <h3 className="font-bold text-lg">File Size error!</h3>
@@ -152,7 +152,7 @@ const Page = ({ params }) => {
         </form>
       </dialog>
       <dialog id="my_modal_3" className="modal">
-        <form method="dialog" className="modal-box flex flex-col gap-5">
+        <form method="dialog" className="modal-box flex flex-col gap-4">
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
             ✕
           </button>
@@ -171,6 +171,10 @@ const Page = ({ params }) => {
             className="file-input file-input-bordered w-full "
             onChange={handleFileInputChange}
           />
+          <p className="flex items-center gap-1">
+            Upload file limit: 20MB ( will be verify by Lit nodes
+            <Image src={litLogo} alt="lit logo" width={20}></Image>)
+          </p>
           <div className="modal-action flex justify-center">
             <button className="btn" onClick={() => listAction()}>
               Create

@@ -29,7 +29,6 @@ const Page = () => {
   };
   return (
     <div className="bg-base-200">
-      <Header />
       <div className="flex flex-col h-full gap-5 py-7">
         <h3 className="text-center font-semibold text-[2rem]">
           Markdown Editor

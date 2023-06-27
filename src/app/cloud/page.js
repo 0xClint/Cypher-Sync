@@ -100,29 +100,6 @@ const Page = () => {
           </div>
         </form>
       </dialog>
-
-      <Header />
-      {/* {isAuth && (
-        <dialog id="my_modal_1" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Create Capabilities</h3>
-            <p className="py-4">
-              Please create capabilities before using the drive
-            </p>
-            <div
-            className="modal-action"
-            >
-              if there is a button in form, it will close the modal
-              <button
-                className="btn"
-                onClick={() => createcapability()}
-              >
-                Create capability
-              </button>
-            </div>
-          </div>
-        </dialog>
-      )} */}
       {!isAuth && (
         <div
           className="fixed top-0 w-screen h-screen flex justify-center items-center"
