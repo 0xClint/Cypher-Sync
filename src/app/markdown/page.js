@@ -1,9 +1,7 @@
 "use client";
-import { Header } from "@/components";
 import { useState, useEffect } from "react";
 import {
   Extension,
-  FolderType,
   WALLET,
   StorageProviderName,
 } from "@dataverse/runtime-connector";
@@ -15,7 +13,6 @@ const Page = () => {
   const [fileName, setFileName] = useState("");
   const [folderId, setfolderId] = useState("");
   const [loader, setLoader] = useState(false);
-  const [isAuth, setisAuth] = useState(true);
   const [runtimeConnector, setRuntimeConnector] = useState(null);
   const isBrowser = typeof window !== "undefined";
 
@@ -29,23 +26,7 @@ const Page = () => {
   }, [isBrowser]);
 
   useEffect(() => {
-    const checkcapabilities = async () => {
-      const pkh = await runtimeConnector?.checkCapability(
-        process.env.NEXT_PUBLIC_APP_NAME
-      );
-      console.log(pkh);
-      if (!pkh) {
-        setisAuth(false);
-        return;
-      }
-      setisAuth(true);
-    };
-    checkcapabilities();
-  }, [runtimeConnector]);
-
-  useEffect(() => {
     const fetchFolder = async () => {
-      // if (isAuth) {
       setLoader(true);
       const res = await runtimeConnector?.readFolders();
       // setFolderData(res ? res : "");
@@ -54,9 +35,8 @@ const Page = () => {
       await setfolderId(keys[0]);
       setLoader(false);
     };
-    // };
     fetchFolder();
-  }, [runtimeConnector, isAuth]);
+  }, [runtimeConnector]);
 
   const createcapability = async () => {
     setLoader(true);
@@ -133,25 +113,8 @@ const Page = () => {
         >
           <span className="loading loading-spinner loading-lg"></span>
         </div>
-      )}{" "}
-      {!isAuth && (
-        <div
-          className="fixed top-0 w-screen h-screen flex justify-center items-center"
-          style={{ background: "rgba(223, 223, 223, 0.22)" }}
-        >
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Create Capabilities</h3>
-            <p className="py-4">
-              Please create capabilities before using the drive
-            </p>
-            <div className="modal-action">
-              <button className="btn" onClick={() => createcapability()}>
-                Create capability
-              </button>
-            </div>
-          </div>
-        </div>
       )}
+
       <div className="flex flex-col h-full gap-5 py-7">
         <h3 className="text-center font-semibold text-[2rem]">
           Markdown Editor

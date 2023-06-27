@@ -1,97 +1,8 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { Extension, FolderType, WALLET } from "@dataverse/runtime-connector";
-import { FolderCard } from "@/components";
 import Link from "next/link";
 
 const Page = () => {
-  const [runtimeConnector, setRuntimeConnector] = useState(null);
-  const isBrowser = typeof window !== "undefined";
-  const [folderData, setFolderData] = useState("");
-  const [loader, setLoader] = useState(false);
-  const [folderName, setfolderName] = useState("");
-
-  useEffect(() => {
-    if (isBrowser) {
-      import("@dataverse/runtime-connector").then((module) => {
-        const RuntimeConnector = module.RuntimeConnector;
-        setRuntimeConnector(new RuntimeConnector(Extension));
-      });
-    }
-  }, [isBrowser]);
-
-  const createcapability = async () => {
-    setLoader(true);
-    const pkh = await runtimeConnector.createCapability({
-      app: process.env.NEXT_PUBLIC_APP_NAME,
-      // resource: RESOURCE.CERAMIC,
-      wallet: WALLET.METAMASK,
-    });
-    console.log(pkh);
-    setLoader(false);
-    location.reload();
-  };
-
-  useEffect(() => {
-    const fetchFolder = async () => {
-      setLoader(true);
-      const res = await runtimeConnector?.readFolders();
-      setFolderData(res ? res : "");
-      console.log(res);
-      setLoader(false);
-    };
-    fetchFolder();
-  }, [runtimeConnector]);
-
-  const connectWallet = async () => {
-    const res = await runtimeConnector?.connectWallet();
-    console.log(res);
-  };
-
-  const createFolder = async () => {
-    if (folderName) {
-      setLoader(true);
-      const res = await runtimeConnector?.createFolder({
-        folderType: FolderType.Private,
-        folderName: folderName,
-      });
-      console.log(res);
-      setLoader(false);
-      location.reload();
-    }
-  };
-
   return (
-    <div className="bg-base-200">
-      <dialog id="my_modal_3" className="modal">
-        <form method="dialog" className="modal-box">
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-            ✕
-          </button>
-          <h3 className="font-bold text-lg mb-2">File Name</h3>
-          <input
-            type="text"
-            placeholder="Name here"
-            value={folderName}
-            onChange={(e) => setfolderName(e.target.value)}
-            className="input w-full"
-          />
-          <div className="modal-action flex justify-center">
-            <button className="btn" onClick={() => createFolder()}>
-              Create
-            </button>
-          </div>
-        </form>
-      </dialog>
-
-      {loader && (
-        <div
-          className="fixed top-0 w-screen h-screen flex justify-center items-center"
-          style={{ background: "rgba(223, 223, 223, 0.22)" }}
-        >
-          <span className="loading loading-spinner loading-lg"></span>
-        </div>
-      )}
+    <div>
       <div className="flex h-full">
         <div className="w-64 h-[89.8vh] border-r  border-[#d0d0d0]">
           <ul className="menu bg-base-200 w-full rounded-box">
@@ -169,25 +80,38 @@ const Page = () => {
         </div>
         <div className="w-full p-4">
           <div className=" mr-10 flex justify-between">
-            <h2 className="font-semibold text-[1.2rem]">Files</h2>
-            <button
-              className="btn btn-outline"
-              onClick={() => window.my_modal_3.showModal()}
-            >
-              Create Folder +
-            </button>
+            <h2 className="font-semibold text-[1.2rem]">Global Chat</h2>
+            <button className="btn btn-outline">Create Folder +</button>
           </div>
-          <div className="my-5 px-3 flex flex-wrap gap-10">
-            {folderData ? (
-              Object.keys(folderData).map((id) => {
-                const { options } = folderData[id];
-                return (
-                  <FolderCard key={id} name={options.folderName} id={id} />
-                );
-              })
-            ) : (
-              <div className="w-full h-[80vh]">Empty</div>
-            )}
+          <div className="my-5 px-3">
+            <div className="chat chat-start">
+              <div className="chat-image avatar">
+                <div className="w-10 rounded-full">
+                  <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+              </div>
+              <div className="chat-bubble">
+                It was said that you would, destroy the Sith, not join them.
+              </div>
+            </div>
+            <div className="chat chat-start">
+              <div className="chat-image avatar">
+                <div className="w-10 rounded-full">
+                  <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+              </div>
+              <div className="chat-bubble">
+                It was you who would bring balance to the Force
+              </div>
+            </div>
+            <div className="chat chat-start">
+              <div className="chat-image avatar">
+                <div className="w-10 rounded-full">
+                  <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+              </div>
+              <div className="chat-bubble">Not leave it in Darkness</div>
+            </div>
           </div>
         </div>
       </div>

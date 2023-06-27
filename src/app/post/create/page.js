@@ -1,100 +1,11 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { Extension, FolderType, WALLET } from "@dataverse/runtime-connector";
-import { FolderCard } from "@/components";
 import Link from "next/link";
 
 const Page = () => {
-  const [runtimeConnector, setRuntimeConnector] = useState(null);
-  const isBrowser = typeof window !== "undefined";
-  const [folderData, setFolderData] = useState("");
-  const [loader, setLoader] = useState(false);
-  const [folderName, setfolderName] = useState("");
-
-  useEffect(() => {
-    if (isBrowser) {
-      import("@dataverse/runtime-connector").then((module) => {
-        const RuntimeConnector = module.RuntimeConnector;
-        setRuntimeConnector(new RuntimeConnector(Extension));
-      });
-    }
-  }, [isBrowser]);
-
-  const createcapability = async () => {
-    setLoader(true);
-    const pkh = await runtimeConnector.createCapability({
-      app: process.env.NEXT_PUBLIC_APP_NAME,
-      // resource: RESOURCE.CERAMIC,
-      wallet: WALLET.METAMASK,
-    });
-    console.log(pkh);
-    setLoader(false);
-    location.reload();
-  };
-
-  useEffect(() => {
-    const fetchFolder = async () => {
-      setLoader(true);
-      const res = await runtimeConnector?.readFolders();
-      setFolderData(res ? res : "");
-      console.log(res);
-      setLoader(false);
-    };
-    fetchFolder();
-  }, [runtimeConnector]);
-
-  const connectWallet = async () => {
-    const res = await runtimeConnector?.connectWallet();
-    console.log(res);
-  };
-
-  const createFolder = async () => {
-    if (folderName) {
-      setLoader(true);
-      const res = await runtimeConnector?.createFolder({
-        folderType: FolderType.Private,
-        folderName: folderName,
-      });
-      console.log(res);
-      setLoader(false);
-      location.reload();
-    }
-  };
-
   return (
     <div className="bg-base-200">
-      <dialog id="my_modal_3" className="modal">
-        <form method="dialog" className="modal-box">
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-            ✕
-          </button>
-          <h3 className="font-bold text-lg mb-2">File Name</h3>
-          <input
-            type="text"
-            placeholder="Name here"
-            value={folderName}
-            onChange={(e) => setfolderName(e.target.value)}
-            className="input w-full"
-          />
-          <div className="modal-action flex justify-center">
-            <button className="btn" onClick={() => createFolder()}>
-              Create
-            </button>
-          </div>
-        </form>
-      </dialog>
-
-      {loader && (
-        <div
-          className="fixed top-0 w-screen h-screen flex justify-center items-center"
-          style={{ background: "rgba(223, 223, 223, 0.22)" }}
-        >
-          <span className="loading loading-spinner loading-lg"></span>
-        </div>
-      )}
       <div className="flex h-full">
-        <div className="w-64 h-[89.8vh] border-r  border-[#d0d0d0]">
-          <ul className="menu bg-base-200 w-full rounded-box">
+        <div className="min-w-[220px] border-r  border-[#d0d0d0]">
+          <ul className="menu bg-base-200 w-full sticky top-1 rounded-box">
             <li>
               <h2 className="menu-title">Apps</h2>
 
@@ -165,29 +76,77 @@ const Page = () => {
                 view
               </Link>
             </li>
+            <li className="pl-4">
+              <Link href="/post">
+                <svg
+                  width="22"
+                  viewBox="0 0 60 54"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M22.7349 1.00359e-06C19.0207 -0.00111869 15.3662 0.934699 12.1097 2.72084C8.85322 4.50699 6.0999 7.08574 4.10457 10.2184C2.10925 13.3511 0.936405 16.9366 0.694582 20.6429C0.452759 24.3492 1.14977 28.0566 2.72112 31.422L0.589619 39.789C0.432953 40.4036 0.437791 41.0483 0.603664 41.6604C0.769536 42.2726 1.09081 42.8315 1.53633 43.283C1.98184 43.7344 2.53646 44.063 3.1464 44.237C3.75633 44.4109 4.40087 44.4243 5.01749 44.2758C7.22554 43.7458 10.62 42.9303 13.6436 42.209C16.6457 43.5628 19.9126 44.2279 23.2051 44.1556C26.4975 44.0833 29.7321 43.2755 32.6719 41.7912C35.6117 40.307 38.1823 38.184 40.1953 35.5776C42.2084 32.9713 43.6129 29.9477 44.3062 26.7282C44.9994 23.5088 44.9636 20.1751 44.2016 16.9712C43.4396 13.7673 41.9705 10.7745 39.9021 8.21192C37.8336 5.64932 35.2182 3.58186 32.2472 2.16097C29.2763 0.740067 26.0251 0.00171979 22.7319 1.00359e-06H22.7349ZM5.07048 22.0805C5.07164 18.2393 6.32481 14.5033 8.6401 11.4384C10.9554 8.37346 14.2066 6.14676 17.9011 5.09567C21.5956 4.04457 25.5321 4.22637 29.114 5.61351C32.6959 7.00066 35.728 9.51754 37.751 12.7828C39.7739 16.0481 40.6774 19.8837 40.3245 23.7086C39.9717 27.5335 38.3816 31.1391 35.7954 33.9791C33.2092 36.8192 29.7678 38.7388 25.9925 39.4472C22.2173 40.1556 18.3141 39.6141 14.8742 37.9048L14.1559 37.5486L13.3786 37.734C10.6613 38.3817 7.51994 39.1325 5.17058 39.6977L7.20198 31.7252L7.40807 30.9127L7.02534 30.1678C5.73595 27.6673 5.06556 24.8938 5.07048 22.0805ZM37.4552 52.9931C31.8855 53.0012 26.5199 50.897 22.4404 47.105H22.7349C24.8487 47.105 26.9007 46.843 28.8585 46.3484C31.4051 47.7674 34.3345 48.577 37.4552 48.577C40.2815 48.577 42.9488 47.9146 45.3158 46.737L46.0312 46.3808L46.8085 46.5662C49.5229 47.2139 52.5965 47.8763 54.8752 48.3621C54.36 46.1511 53.6563 43.1923 52.9851 40.5574L52.779 39.7448L53.1617 39C54.4521 36.4997 55.1236 33.7263 55.1195 30.9127C55.1211 27.9594 54.3815 25.0529 52.9686 22.4595C51.5556 19.8661 49.5145 17.6687 47.0322 16.0687C46.5131 13.9658 45.7213 11.9398 44.6769 10.0422C47.5996 11.0542 50.2772 12.6687 52.5363 14.7812C54.7954 16.8937 56.5857 19.4571 57.7913 22.3054C58.9969 25.1536 59.5909 28.2234 59.5348 31.3158C59.4788 34.4082 58.774 37.4544 57.466 40.2571C58.2108 43.2247 58.9645 46.4396 59.4414 48.5093C59.5813 49.1089 59.5677 49.7341 59.4019 50.3271C59.2361 50.92 58.9236 51.4617 58.4931 51.9018C58.0626 52.342 57.5281 52.6666 56.9389 52.8455C56.3498 53.0244 55.7251 53.0519 55.1225 52.9254C52.2568 52.3295 49.398 51.7014 46.5464 51.0412C43.6896 52.3319 40.59 52.9973 37.4552 52.9931Z"
+                    fill="black"
+                  />
+                </svg>
+                View posts
+              </Link>
+            </li>
+            <li className="pl-4">
+              <Link href="/post/create">
+                <svg
+                  width="22"
+                  viewBox="0 0 60 54"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M22.7349 1.00359e-06C19.0207 -0.00111869 15.3662 0.934699 12.1097 2.72084C8.85322 4.50699 6.0999 7.08574 4.10457 10.2184C2.10925 13.3511 0.936405 16.9366 0.694582 20.6429C0.452759 24.3492 1.14977 28.0566 2.72112 31.422L0.589619 39.789C0.432953 40.4036 0.437791 41.0483 0.603664 41.6604C0.769536 42.2726 1.09081 42.8315 1.53633 43.283C1.98184 43.7344 2.53646 44.063 3.1464 44.237C3.75633 44.4109 4.40087 44.4243 5.01749 44.2758C7.22554 43.7458 10.62 42.9303 13.6436 42.209C16.6457 43.5628 19.9126 44.2279 23.2051 44.1556C26.4975 44.0833 29.7321 43.2755 32.6719 41.7912C35.6117 40.307 38.1823 38.184 40.1953 35.5776C42.2084 32.9713 43.6129 29.9477 44.3062 26.7282C44.9994 23.5088 44.9636 20.1751 44.2016 16.9712C43.4396 13.7673 41.9705 10.7745 39.9021 8.21192C37.8336 5.64932 35.2182 3.58186 32.2472 2.16097C29.2763 0.740067 26.0251 0.00171979 22.7319 1.00359e-06H22.7349ZM5.07048 22.0805C5.07164 18.2393 6.32481 14.5033 8.6401 11.4384C10.9554 8.37346 14.2066 6.14676 17.9011 5.09567C21.5956 4.04457 25.5321 4.22637 29.114 5.61351C32.6959 7.00066 35.728 9.51754 37.751 12.7828C39.7739 16.0481 40.6774 19.8837 40.3245 23.7086C39.9717 27.5335 38.3816 31.1391 35.7954 33.9791C33.2092 36.8192 29.7678 38.7388 25.9925 39.4472C22.2173 40.1556 18.3141 39.6141 14.8742 37.9048L14.1559 37.5486L13.3786 37.734C10.6613 38.3817 7.51994 39.1325 5.17058 39.6977L7.20198 31.7252L7.40807 30.9127L7.02534 30.1678C5.73595 27.6673 5.06556 24.8938 5.07048 22.0805ZM37.4552 52.9931C31.8855 53.0012 26.5199 50.897 22.4404 47.105H22.7349C24.8487 47.105 26.9007 46.843 28.8585 46.3484C31.4051 47.7674 34.3345 48.577 37.4552 48.577C40.2815 48.577 42.9488 47.9146 45.3158 46.737L46.0312 46.3808L46.8085 46.5662C49.5229 47.2139 52.5965 47.8763 54.8752 48.3621C54.36 46.1511 53.6563 43.1923 52.9851 40.5574L52.779 39.7448L53.1617 39C54.4521 36.4997 55.1236 33.7263 55.1195 30.9127C55.1211 27.9594 54.3815 25.0529 52.9686 22.4595C51.5556 19.8661 49.5145 17.6687 47.0322 16.0687C46.5131 13.9658 45.7213 11.9398 44.6769 10.0422C47.5996 11.0542 50.2772 12.6687 52.5363 14.7812C54.7954 16.8937 56.5857 19.4571 57.7913 22.3054C58.9969 25.1536 59.5909 28.2234 59.5348 31.3158C59.4788 34.4082 58.774 37.4544 57.466 40.2571C58.2108 43.2247 58.9645 46.4396 59.4414 48.5093C59.5813 49.1089 59.5677 49.7341 59.4019 50.3271C59.2361 50.92 58.9236 51.4617 58.4931 51.9018C58.0626 52.342 57.5281 52.6666 56.9389 52.8455C56.3498 53.0244 55.7251 53.0519 55.1225 52.9254C52.2568 52.3295 49.398 51.7014 46.5464 51.0412C43.6896 52.3319 40.59 52.9973 37.4552 52.9931Z"
+                    fill="black"
+                  />
+                </svg>
+                Create
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="w-full p-4">
           <div className=" mr-10 flex justify-between">
-            <h2 className="font-semibold text-[1.2rem]">Files</h2>
-            <button
-              className="btn btn-outline"
-              onClick={() => window.my_modal_3.showModal()}
-            >
-              Create Folder +
-            </button>
+            <h2 className="font-semibold text-[1.2rem]">Create Post</h2>
           </div>
-          <div className="my-5 px-3 flex flex-wrap gap-10">
-            {folderData ? (
-              Object.keys(folderData).map((id) => {
-                const { options } = folderData[id];
-                return (
-                  <FolderCard key={id} name={options.folderName} id={id} />
-                );
-              })
-            ) : (
-              <div className="w-full h-[80vh]">Empty</div>
-            )}
+          <div className="formContainer w-[600px] mx-auto flex flex-col gap-7">
+            <div className="flex flex-col">
+              <label className="font-semibold mb-1">Title</label>
+              <input
+                type="text"
+                placeholder="Title here"
+                className="input input-bordered w-full"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="font-semibold mb-1">Category</label>
+              <input
+                type="text"
+                readOnly
+                placeholder="Category"
+                className="input input-bordered w-full "
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="font-semibold mb-1">Content</label>
+              <textarea
+                className="textarea textarea-bordered h-60"
+                placeholder="Content here..."
+              ></textarea>
+            </div>
+            <div className="flex flex-col">
+              <label className="font-semibold mb-1">Upload Image</label>
+              <input
+                type="file"
+                className="file-input file-input-bordered w-full "
+              />
+            </div>
+            <button className="btn btn-success w-32 mx-auto">Post</button>
           </div>
         </div>
       </div>

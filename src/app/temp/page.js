@@ -62,7 +62,7 @@ const Page = () => {
   const loadStreamsBy = async () => {
     const pkh = await runtimeConnector.loadStreamsBy({
       modelId:
-        "kjzl6hvfrbw6c83pw6fv43od18xwnqa9sp0245dfn33il8bp3eket0m1lx2i7rk",
+        "kjzl6hvfrbw6c739n5ivbpyh47j25m5uya6ih24uiep9m63o63cmytr519om6c8",
     });
     console.log(pkh);
   };
@@ -70,21 +70,24 @@ const Page = () => {
   const createStream = async () => {
     const pkh = await runtimeConnector.createStream({
       modelId:
-        "kjzl6hvfrbw6c83pw6fv43od18xwnqa9sp0245dfn33il8bp3eket0m1lx2i7rk",
+        "kjzl6hvfrbw6c739n5ivbpyh47j25m5uya6ih24uiep9m63o63cmytr519om6c8",
       streamContent: {
         appVersion: "1",
-        text: "Photography",
-        images: [
+        title: "Photography",
+        description: "Photography is an also type of art!",
+        image:
           "https://johnstillk8.scusd.edu/sites/main/files/main-images/camera_lense_0.jpeg",
-        ],
-        videos: ["./video.mp4"],
+
+        video:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJOi2pyfg14hb1e3waXJ5mceQkH4froE5TgnVQDkZt&s",
+        // options: "options",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        encrypted: JSON.stringify({
-          text: false,
-          images: false,
-          videos: false,
-        }),
+        // encrypted: JSON.stringify({
+        //   title: false,
+        //   image: false,
+        //   video: false,
+        // }),
       },
     });
     console.log(pkh);
