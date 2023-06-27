@@ -57,7 +57,7 @@ const Header = () => {
         // Handle any errors here
       });
   };
-  console.log(balance);
+  // console.log(balance);
 
   const visitRamp = async () => {
     const pkh = await runtimeConnector.createCapability({

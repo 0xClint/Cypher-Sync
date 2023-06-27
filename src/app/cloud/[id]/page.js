@@ -38,7 +38,7 @@ const Page = ({ params }) => {
     const fetchFolder = async () => {
       setLoader(true);
       const res = await runtimeConnector?.readFolders();
-      //   console.log(res);
+      console.log(res);
       if (res) {
         await setFileData(
           Object.keys(res[params.id].mirrors).length != 0
@@ -51,14 +51,17 @@ const Page = ({ params }) => {
     fetchFolder();
   }, [runtimeConnector]);
 
-  const fetchIPFS = async (id, indexFileId) => {
+  const fetchIPFS = async (id, indexFileId, name) => {
+    console.log(name);
     setSelectFileDelete(indexFileId);
     try {
       setLoader(true);
       await fetch(`https://ipfs.io/ipfs/${id}`)
         .then((response) => response.text())
         .then(async (data) => {
-          //   console.log(data);
+          // console.log(await atob(data));
+          //  if (name.endsWith("_MD")) {
+          //  }else{}
           let file = await data;
           setFile(await `data:image/png;base64,${file}`);
           setModal(true);
@@ -278,7 +281,11 @@ const Page = ({ params }) => {
                 return (
                   <div
                     onClick={() =>
-                      fetchIPFS(mirrorFile.contentId, mirrorFile.indexFileId)
+                      fetchIPFS(
+                        mirrorFile.contentId,
+                        mirrorFile.indexFileId,
+                        mirrorFile.comment.mirrorName
+                      )
                     }
                     key={mirrorId}
                   >
