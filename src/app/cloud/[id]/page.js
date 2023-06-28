@@ -178,6 +178,7 @@ const Page = ({ params }) => {
           <input
             type="file"
             className="file-input file-input-bordered w-full "
+            accept="image/*"
             onChange={handleFileInputChange}
           />
           <p className="flex items-center gap-1">
