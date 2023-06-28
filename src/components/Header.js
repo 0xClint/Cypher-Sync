@@ -15,6 +15,7 @@ const Header = () => {
   const [balance, setBalance] = useState("");
   const [address, setAddress] = useState("");
   const [isAuth, setisAuth] = useState(true);
+  const [loader, setLoader] = useState(false);
   const isBrowser = typeof window !== "undefined";
   const router = useRouter();
 
@@ -46,11 +47,13 @@ const Header = () => {
 
   const createcapabilities = async () => {
     setisAuth(true);
+    setLoader(true);
     const pkh = await runtimeConnector.createCapability({
       app: process.env.NEXT_PUBLIC_APP_NAME,
       // resource: RESOURCE.CERAMIC,
       wallet: WALLET.METAMASK,
     });
+    setLoader(false);
     await fetch(
       "https://polygon-mumbai.blockpi.network/v1/rpc/66aaf318663ab49c3eddd375ef85e7848b00d5fc",
       {
@@ -68,7 +71,7 @@ const Header = () => {
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.result);
+        // console.log(data.result);
         setBalance((Number(data.result) / 10 ** 18).toFixed(2));
         // Handle the response data here
       })
@@ -95,6 +98,14 @@ const Header = () => {
   };
   return (
     <div>
+      {loader && (
+        <div
+          className="fixed top-0 w-screen h-screen flex justify-center items-center"
+          style={{ background: "rgba(223, 223, 223, 0.22)" }}
+        >
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      )}
       <div className="flex w-full justify-between px-7 py-3 bg-base-200 border-b border-[#d0d0d0]">
         <div className="flex gap-10">
           <Link href="/">

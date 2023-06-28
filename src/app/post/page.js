@@ -1,4 +1,7 @@
+"use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Extension, WALLET } from "@dataverse/runtime-connector";
 import mail from "@/assets/mail.png";
 import Image from "next/image";
 import { BlogCard } from "@/components";
@@ -6,8 +9,43 @@ import { BlogCard } from "@/components";
 const data = [1, 2, 3, 4, 5];
 
 const Page = () => {
+  const [loader, setLoader] = useState(false);
+  const [postData, setPostData] = useState("");
+  const isBrowser = typeof window !== "undefined";
+  const [runtimeConnector, setRuntimeConnector] = useState(null);
+
+  useEffect(() => {
+    if (isBrowser) {
+      import("@dataverse/runtime-connector").then((module) => {
+        const RuntimeConnector = module.RuntimeConnector;
+        setRuntimeConnector(new RuntimeConnector(Extension));
+      });
+    }
+  }, [isBrowser]);
+
+  useEffect(() => {
+    const fetchFolder = async () => {
+      setLoader(true);
+      const res = await runtimeConnector?.loadStreamsBy({
+        modelId: process.env.NEXT_PUBLIC_POST_MODEL_ID,
+      });
+      console.log(res);
+      setPostData((await res) ? res : "");
+      setLoader(false);
+    };
+    fetchFolder();
+  }, [runtimeConnector, isBrowser]);
+
   return (
     <div className="bg-base-200">
+      {loader && (
+        <div
+          className="fixed top-0 w-screen h-screen flex justify-center items-center"
+          style={{ background: "rgba(223, 223, 223, 0.22)" }}
+        >
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      )}
       <div className="flex h-full">
         <div className="min-w-[220px] border-r  border-[#d0d0d0]">
           <ul className="menu bg-base-200 w-full sticky top-1 rounded-box">
@@ -120,43 +158,18 @@ const Page = () => {
             <h2 className="font-semibold text-[1.2rem]">Posts</h2>
             {/* <button className="btn btn-outline">Create Folder +</button> */}
           </div>
-          <div className="mt-3 mb-14 px-3">
-            <div className="flex justify-around">
-              <div className="w-[550px]">
-                <div className="imgContainer w-full h-[350px] overflow-hidden rounded-2xl">
-                  <Image src={mail} alt="post" width={550}></Image>
-                </div>
-                <div className="flex flex-col my-1">
-                  <p className="text-[#2CAE8F] font-medium text-sm">
-                    THEME: sdasdsad
-                  </p>
-                  <p className="font-bold text-[1.5rem]">Titleee</p>
-                  <p className="text-[#878181] font-normal text-sm">
-                    20th February, 2023
-                  </p>
-                </div>
-              </div>
-              <div className="w-[550px]">
-                <div className="imgContainer w-full h-[350px] overflow-hidden rounded-2xl">
-                  <Image src={mail} alt="post" width={550}></Image>
-                </div>
-                <div className="flex flex-col my-1">
-                  <p className="text-[#2CAE8F] font-medium text-sm">
-                    THEME: sdasdsad
-                  </p>
-                  <p className="font-bold text-[1.5rem]">Titleee</p>
-                  <p className="text-[#878181] font-normal text-sm">
-                    20th February, 2023
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="my-5 px-3">
+
+          <div className="my-5 px-3 min-h-[540px]">
             <div className="flex flex-wrap justify-around gap-y-10">
-              {data.map((id) => {
-                return <BlogCard key={id} />;
-              })}
+              {postData ? (
+                Object.keys(postData).map((id) => {
+                  const { pkh, streamContent } = postData[id];
+                  console.log(pkh);
+                  return <BlogCard key={id} data={streamContent} id={id} />;
+                })
+              ) : (
+                <div className="w-full h-[80vh]">Empty</div>
+              )}
             </div>
           </div>
         </div>

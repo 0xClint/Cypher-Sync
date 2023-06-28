@@ -1,10 +1,50 @@
-import Image from "next/image";
+"use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import mail from "@/assets/mail.png";
+import { Extension, WALLET } from "@dataverse/runtime-connector";
 
-const Page = () => {
+const Page = ({ params }) => {
+  const [loader, setLoader] = useState(false);
+  const [postData, setPostData] = useState("");
+  const [recentPostData, setRecentPostData] = useState("");
+  const isBrowser = typeof window !== "undefined";
+  const [runtimeConnector, setRuntimeConnector] = useState(null);
+
+  useEffect(() => {
+    if (isBrowser) {
+      import("@dataverse/runtime-connector").then((module) => {
+        const RuntimeConnector = module.RuntimeConnector;
+        setRuntimeConnector(new RuntimeConnector(Extension));
+      });
+    }
+  }, [isBrowser]);
+
+  useEffect(() => {
+    const fetchFolder = async () => {
+      setLoader(true);
+      const res = await runtimeConnector?.loadStreamsBy({
+        modelId: process.env.NEXT_PUBLIC_POST_MODEL_ID,
+      });
+      console.log(res);
+      await setRecentPostData((await res) ? res : "");
+
+      await setPostData(
+        (await Object.keys(res[params.id]).length) != 0 ? res[params.id] : 0
+      );
+      setLoader(false);
+    };
+    fetchFolder();
+  }, [runtimeConnector, isBrowser]);
   return (
     <div className="bg-base-200">
+      {loader && (
+        <div
+          className="fixed top-0 w-screen h-screen flex justify-center items-center"
+          style={{ background: "rgba(223, 223, 223, 0.22)" }}
+        >
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      )}
       <div className="flex h-full">
         <div className="min-w-[220px] border-r  border-[#d0d0d0]">
           <ul className="menu bg-base-200 w-full sticky top-1 rounded-box">
@@ -129,19 +169,32 @@ const Page = () => {
           <div className="flex justify-center gap-14">
             <div className="blogContainer w-[850px] ml-5">
               <h2 className=" font-bold text-[2rem] my-5">
-                Maecenas et fermentum felis. Quisque mauris odio enas et
-                fermentum felis. Quisqu
+                {postData && postData.streamContent
+                  ? postData.streamContent.content.title
+                  : "Title"}
               </h2>
               <div className="flex flex-col my-3">
                 <p className="text-[0.8rem] text-[#2CAE8F] font-medium">
-                  THEME
+                  {postData && postData.streamContent
+                    ? postData.streamContent.content.category
+                    : "Category"}
                 </p>
                 <h2 className="text-[#878181] text-[0.8rem] font-normal">
-                  September 19, 2022
+                  {postData && postData.streamContent
+                    ? postData.streamContent.content.createdAt
+                    : "Date"}
                 </h2>
               </div>
-              <div className="imageContainer h-[450px] w-full flex drop-shadow justify-center items-center overflow-hidden rounded-2xl">
-                <Image src={mail} width={850} alt="post image"></Image>
+              <div className="imageContainer h-[450px] w-full flex border drop-shadow justify-center items-center overflow-hidden rounded-2xl">
+                <img
+                  src={
+                    postData && postData.streamContent
+                      ? `https://gateway.lighthouse.storage/ipfs/${postData.streamContent.content.image}`
+                      : "https://cdn.questionpro.com/userimages/site_media/no-image.png"
+                  }
+                  alt="post"
+                  className="w-[100%]"
+                ></img>
               </div>
               <div className="flex  my-5 gap-1 items-center">
                 <div className="avatar">
@@ -151,75 +204,59 @@ const Page = () => {
                 </div>
                 <div className="flex flex-col">
                   <p className="text-[0.8rem] text-[#2CAE8F] font-medium">
-                    THEME
+                    User
                   </p>
                   <h2 className="text-[#878181] text-[0.8rem] font-normal">
-                    September 19, 2022
+                    {postData && postData
+                      ? `${postData.pkh
+                          .replace("did:pkh:eip155:1:", "")
+                          .substring(0, 6)}.....${postData.pkh.substring(52)}`
+                      : "Title"}
                   </h2>
                 </div>
               </div>
               <div className="leading-relaxed mb-14">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Vestibulum consectetur, est id consequat ultricies, nibh lacus
-                vehicula nisl, eu auctor turpis ante eu ante. Fusce cursus eu
-                sapien et luctus. Donec eu diam quis nunc interdum luctus. Ut
-                velit metus, laoreet ut justo vitae, venenatis euismod mauris.
-                Quisque semper nulla ut augue lobortis, nec rhoncus orci
-                iaculis. In hac habitasse platea dictumst. Aliquam fermentum
-                magna neque. Ut vulputate sed dolor ut ullamcorper. Curabitur
-                lobortis quam vestibulum lectus dictum, a egestas nunc
-                sollicitudin. Nulla facilisi. Nullam tempor dapibus urna, id
-                pretium massa sodales a. Etiam a posuere dolor. Nam et consequat
-                lacus. Quisque eu ipsum ac ipsum mollis ullamcorper. Sed
-                interdum nulla enim, vel sollicitudin est lobortis ut. Duis ac
-                metus non justo dictum porta. Orci varius natoque penatibus et
-                magnis dis parturient montes, nascetur ridiculus mus.
-                Suspendisse sit amet imperdiet nibh. Donec nec ipsum risus.
-                Vivamus ac molestie tellus. Interdum et malesuada fames ac ante
-                ipsum primis in faucibus. Proin neque purus, dapibus sit amet
-                augue ac, posuere viverra erat. Proin vestibulum facilisis
-                libero in porttitor. Maecenas et fermentum felis. Quisque mauris
-                odio, commodo ac condimentum et, ullamcorper eu magna. Mauris
-                mollis suscipit magna eu finibus. Phasellus cursus ante in
-                pellentesque placerat. Nulla venenatis vel risus eu malesuada.
-                Cras dictum ultricies enim et imperdiet. In eleifend tortor vel
-                elit suscipit, ac placerat elit dapibus. Nulla condimentum
-                libero et iaculis dictum. Donec ultrices sem volutpat
-                sollicitudin gravida. Sed quis libero a felis ullamcorper
-                pellentesque. Suspendisse id quam eget metus auctor convallis eu
-                at arcu. Donec augue tellus, placerat nec sem eget, consequat
-                malesuada mauris. Mauris hendrerit sed sapien vitae tincidunt.
-                Praesent volutpat, erat vel faucibus tristique, magna sem luctus
-                ante, a mollis velit sem eu nunc. Aliquam nec pharetra leo, sit
-                amet dictum turpis. Suspendisse eget facilisis ligula. Cras
-                ligula turpis, finibus ac pharetra et, volutpat non mi. Cras
-                rhoncus dui erat, ut aliquam ipsum finibus at. Morbi ac molestie
-                orci. Nulla eu condimentum sem. Morbi id tincidunt nunc. Aenean
-                accumsan risus sed lacinia molestie. Vivamus blandit est vitae
-                nisi pellentesque blandit. Donec sagittis tempor sem, eu maximus
-                lacus egestas ut. Vestibulum et magna dictum, tincidunt metus
-                at, finibus lorem. Nam lectus ligula, maximus vitae leo at,
-                lacinia elementum nunc. . Morbi porttitor neque lacus, in cursus
-                diam suscipit nec. Phasellus odio nulla, gravida et odio sed,
-                congue fringilla lorem. Etiam urna metus, condimentum non
-                lacinia sit amet, varius non elit. Ut vitae est libero.
+                {postData && postData.streamContent
+                  ? postData.streamContent.content.content
+                  : "Title"}
               </div>
             </div>
             <div className="postContainer">
-              <div className="w-[250px]">
-                <div className="imgContainer w-full h-[200px] overflow-hidden rounded-2xl">
-                  <Image src={mail} alt="post" width={250}></Image>
-                </div>
-                <div className="flex flex-col my-1">
-                  <p className="text-[#2CAE8F] font-medium text-xs">
-                    THEME: sdasdsad
-                  </p>
-                  <p className="font-bold">Titleee</p>
-                  <p className="text-[#878181] font-normal text-xs">
-                    20th February, 2023
-                  </p>
-                </div>
-              </div>
+              {recentPostData ? (
+                Object.keys(recentPostData).map((id) => {
+                  const { pkh, streamContent } = recentPostData[id];
+                  console.log(pkh);
+                  return (
+                    <Link href={`/post/${id}`} key={id}>
+                      <div className="w-[250px]">
+                        <div className="imgContainer w-full h-[200px] overflow-hidden rounded-2xl">
+                          <img
+                            src={
+                              streamContent
+                                ? `https://gateway.lighthouse.storage/ipfs/${streamContent.content.image}`
+                                : "https://cdn.questionpro.com/userimages/site_media/no-image.png"
+                            }
+                            className="w-[100%]"
+                          ></img>
+                        </div>
+                        <div className="flex flex-col my-1">
+                          <p className="text-[#2CAE8F] font-medium text-xs">
+                            {streamContent.content.category}
+                          </p>
+                          <p className="font-bold">
+                            {streamContent.content.title}
+                          </p>
+                          <p className="text-[#878181] font-normal text-xs">
+                            {streamContent.content.createdAt}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })
+              ) : (
+                <div className="w-full h-[80vh]">Empty</div>
+              )}
             </div>
           </div>
         </div>

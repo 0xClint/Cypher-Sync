@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@dataverse/runtime-connector": "^1.0.59",
+    "@lighthouse-web3/sdk": "^0.2.5",
     "@particle-network/auth": "^0.14.1",
     "@particle-network/connect": "^0.14.1",
     "@particle-network/connect-react-ui": "^0.14.1",

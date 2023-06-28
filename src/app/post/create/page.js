@@ -1,8 +1,107 @@
+"use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Extension, WALLET } from "@dataverse/runtime-connector";
+
+import lighthouse from "@lighthouse-web3/sdk";
+import { uploadFile } from "@/utils/fileUpload";
+
+const optionData = [
+  {
+    id: 1,
+    name: "Technology",
+  },
+  {
+    id: 2,
+    name: "Lifestyle",
+  },
+  {
+    id: 3,
+    name: "Finance",
+  },
+  {
+    id: 4,
+    name: "Health and Fitness",
+  },
+  {
+    id: 5,
+    name: "Education",
+  },
+  {
+    id: 6,
+    name: "Sports",
+  },
+  {
+    id: 7,
+    name: "Travel",
+  },
+  {
+    id: 8,
+    name: "Business and Entrepreneurship",
+  },
+];
 
 const Page = () => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
+  const [image, setImage] = useState("");
+  const [loader, setLoader] = useState(false);
+  const isBrowser = typeof window !== "undefined";
+  const [runtimeConnector, setRuntimeConnector] = useState(null);
+
+  useEffect(() => {
+    if (isBrowser) {
+      import("@dataverse/runtime-connector").then((module) => {
+        const RuntimeConnector = module.RuntimeConnector;
+        setRuntimeConnector(new RuntimeConnector(Extension));
+      });
+    }
+  }, [isBrowser]);
+
+  const handlePost = async () => {
+    if (title && content && category) {
+      setLoader(true);
+      const res = await runtimeConnector.createStream({
+        modelId: process.env.NEXT_PUBLIC_POST_MODEL_ID,
+        streamContent: {
+          appVersion: "1",
+          title,
+          category,
+          content,
+          image: await uploadFile(image),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      });
+      console.log(res);
+      setLoader(false);
+      window.my_modal_1.showModal();
+    }
+  };
+
   return (
     <div className="bg-base-200">
+      <dialog id="my_modal_1" className="modal">
+        <form method="dialog" className="modal-box">
+          <h3 className="font-bold text-lg">Post Created Successfully</h3>
+          <p className="py-4">You can see your post on all post page</p>
+          <div className="modal-action">
+            {/* if there is a button in form, it will close the modal */}
+            <Link href="/post">
+              <button className="btn">go</button>
+            </Link>
+          </div>
+        </form>
+      </dialog>
+      {loader && (
+        <div
+          className="fixed top-0 w-screen h-screen flex justify-center items-center"
+          style={{ background: "rgba(223, 223, 223, 0.22)" }}
+        >
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      )}
       <div className="flex h-full">
         <div className="min-w-[220px] border-r  border-[#d0d0d0]">
           <ul className="menu bg-base-200 w-full sticky top-1 rounded-box">
@@ -119,23 +218,42 @@ const Page = () => {
               <label className="font-semibold mb-1">Title</label>
               <input
                 type="text"
+                value={title}
                 placeholder="Title here"
                 className="input input-bordered w-full"
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
             <div className="flex flex-col">
               <label className="font-semibold mb-1">Category</label>
+              <ul className="flex flex-wrap gap-2">
+                {optionData.map(({ id, name }) => {
+                  return (
+                    <li
+                      key={id}
+                      onClick={() => setCategory(name)}
+                      className={`py-1 px-2 flex justify-center items-center cursor-pointer rounded-lg bg-white border border-black hover:border-[#2CAE8F] hover:text-[#2CAE8F]`}
+                    >
+                      {name}
+                    </li>
+                  );
+                })}
+              </ul>
               <input
                 type="text"
                 readOnly
+                value={category}
+                // onChange={}
                 placeholder="Category"
-                className="input input-bordered w-full "
+                className="input input-bordered w-full mt-3"
               />
             </div>
             <div className="flex flex-col">
-              <label className="font-semibold mb-1">Content</label>
+              <label className="font-semibold mb-1">Content ( markdown )</label>
               <textarea
                 className="textarea textarea-bordered h-60"
+                onChange={(e) => setContent(e.target.value)}
+                value={content}
                 placeholder="Content here..."
               ></textarea>
             </div>
@@ -143,10 +261,16 @@ const Page = () => {
               <label className="font-semibold mb-1">Upload Image</label>
               <input
                 type="file"
+                onChange={(e) => setImage(e.target.files)}
                 className="file-input file-input-bordered w-full "
               />
             </div>
-            <button className="btn btn-success w-32 mx-auto">Post</button>
+            <button
+              className="btn btn-success w-32 mx-auto"
+              onClick={() => handlePost()}
+            >
+              Post
+            </button>
           </div>
         </div>
       </div>
