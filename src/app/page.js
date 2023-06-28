@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import blog from "@/assets/blog.png";
 import markdown from "@/assets/markdown.png";
 import Cloud from "@/assets/cloud.png";
 import mail from "@/assets/mail.png";
@@ -26,6 +27,14 @@ export default function Home() {
                   <Image src={markdown} width={180}></Image>
                 </div>
                 <p>Mardown Editor</p>
+              </div>
+            </Link>
+            <Link href="/post">
+              <div className=" flex flex-col gap-2 text-[1.2rem] font-semibold drop-shadow-sm  cursor-pointer ">
+                <div className="w-72 h-72 rounded-[40px] bg-base-100 flex justify-center items-center hover:scale-105 duration-100 ease-in-out">
+                  <Image src={blog} width={180}></Image>
+                </div>
+                <p>Cypher Blog</p>
               </div>
             </Link>
             <div className=" flex flex-col gap-2 text-[1.2rem] font-semibold drop-shadow-sm  cursor-pointer">
