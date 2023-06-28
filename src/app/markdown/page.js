@@ -74,7 +74,9 @@ const Page = () => {
       <dialog id="my_modal_1" className="modal">
         <form method="dialog" className="modal-box">
           <h3 className="font-bold text-lg">File Uploaded Successfully</h3>
-          <p className="py-4">File as been save in "Default" Folder name.</p>
+          <p className="py-4">
+            File as been save in {`"Default"`} Folder name.
+          </p>
           <div className="modal-action">
             {/* if there is a button in form, it will close the modal */}
             <Link href="/cloud">
