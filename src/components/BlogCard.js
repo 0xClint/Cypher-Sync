@@ -13,7 +13,7 @@ const BlogCard = ({ data, id }) => {
                 : "https://cdn.questionpro.com/userimages/site_media/no-image.png"
             }
             alt="post"
-            className="w-[100%]"
+            className="h-[100%]"
           ></img>
         </div>
         <div className="flex flex-col my-1">

@@ -150,7 +150,7 @@ const Page = () => {
               </Link>
             </li>
             <li>
-              <Link href="/cloud">
+              <Link href="/post">
                 <svg
                   width="22"
                   viewBox="0 0 60 54"
@@ -162,7 +162,7 @@ const Page = () => {
                     fill="black"
                   />
                 </svg>
-                view
+                Cypher Blog
               </Link>
             </li>
           </ul>

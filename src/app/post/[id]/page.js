@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { Extension, WALLET } from "@dataverse/runtime-connector";
 
@@ -216,12 +217,14 @@ const Page = ({ params }) => {
                 </div>
               </div>
               <div className="leading-relaxed mb-14">
-                {postData && postData.streamContent
-                  ? postData.streamContent.content.content
-                  : "Title"}
+                <ReactMarkdown>
+                  {postData && postData.streamContent
+                    ? postData.streamContent.content.content
+                    : "Content"}
+                </ReactMarkdown>
               </div>
             </div>
-            <div className="postContainer">
+            <div className="postContainer flex flex-col gap-4">
               {recentPostData ? (
                 Object.keys(recentPostData).map((id) => {
                   const { pkh, streamContent } = recentPostData[id];
@@ -229,14 +232,14 @@ const Page = ({ params }) => {
                   return (
                     <Link href={`/post/${id}`} key={id}>
                       <div className="w-[250px]">
-                        <div className="imgContainer w-full h-[200px] overflow-hidden rounded-2xl">
+                        <div className="imgContainer w-full h-[180px] flex justify-center items-center overflow-hidden rounded-2xl">
                           <img
                             src={
                               streamContent
                                 ? `https://gateway.lighthouse.storage/ipfs/${streamContent.content.image}`
                                 : "https://cdn.questionpro.com/userimages/site_media/no-image.png"
                             }
-                            className="w-[100%]"
+                            className="h-[100%]"
                           ></img>
                         </div>
                         <div className="flex flex-col my-1">
