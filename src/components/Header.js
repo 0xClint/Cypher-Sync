@@ -15,7 +15,7 @@ const Header = () => {
   const [balance, setBalance] = useState("");
   const [address, setAddress] = useState("");
   const [isAuth, setisAuth] = useState(true);
-  const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = useState(true);
   const isBrowser = typeof window !== "undefined";
   const router = useRouter();
 
@@ -147,7 +147,7 @@ const Header = () => {
           <div className="modal-box">
             <h3 className="font-bold text-lg">Create Capabilities</h3>
             <p className="py-4">
-              Please create capabilities before using the drive
+              Connect and create capabilities before using the App
             </p>
             <div className="modal-action">
               <button className="btn" onClick={() => createcapabilities()}>
