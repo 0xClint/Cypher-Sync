@@ -68,7 +68,7 @@ const Page = () => {
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
             ✕
           </button>
-          <h3 className="font-bold text-lg mb-2">File Name</h3>
+          <h3 className="font-bold text-lg mb-2">Folder Name</h3>
           <input
             type="text"
             placeholder="Name here"

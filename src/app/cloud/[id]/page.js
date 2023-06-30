@@ -211,7 +211,7 @@ const Page = ({ params }) => {
           </p>
           <div className="modal-action flex justify-center">
             <button className="btn" onClick={() => listAction()}>
-              Create
+              Upload
             </button>
           </div>
         </form>
