@@ -150,6 +150,7 @@ const Page = ({ params }) => {
 
   return (
     <div className="bg-base-200">
+      <buttpn onClick={() => window.my_modal_3.showModal()}>ada</buttpn>
       <dialog id="my_modal_1" className="modal">
         <form method="dialog" className="modal-box">
           <h3 className="font-bold text-lg">File Size error!</h3>
@@ -165,6 +166,30 @@ const Page = ({ params }) => {
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
             ✕
           </button>
+          <div className="alert text-center alert-warning mx-auto p-0 py-2 mt-4">
+            <div className="text-center w-[100%] ml-3">
+              {" "}
+              Please{" "}
+              <Link
+                href={"https://explorer.litprotocol.com/mint-pkp"}
+                target={"_blank"}
+                rel="noopener noreferrer"
+                className="text-red-600 font-semibold"
+              >
+                Mint
+              </Link>{" "}
+              PKP{" "}
+              <Link
+                href={"https://faucet.litprotocol.com/"}
+                target={"_blank"}
+                rel="noopener noreferrer"
+                className="text-red-600 font-semibold"
+              >
+                (LIT faucet)
+              </Link>{" "}
+              first before uploading files
+            </div>
+          </div>
           <div>
             <label className="font-bold">File Name</label>
             <input
