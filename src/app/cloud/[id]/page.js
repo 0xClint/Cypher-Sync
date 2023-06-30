@@ -150,7 +150,6 @@ const Page = ({ params }) => {
 
   return (
     <div className="bg-base-200">
-      <buttpn onClick={() => window.my_modal_3.showModal()}>ada</buttpn>
       <dialog id="my_modal_1" className="modal">
         <form method="dialog" className="modal-box">
           <h3 className="font-bold text-lg">File Size error!</h3>
